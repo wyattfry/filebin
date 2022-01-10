@@ -21,9 +21,15 @@ app.use(express.static(path.join(__dirname, 'public'))); // enable static files 
 
 // routes
 app.get('/download/:keywords', (request, response) => {
-  const keywords = `${request.params.keywords}.`;
+  const keywords = `${request.params.keywords}.`
+    .trim()
+    .toLocaleLowerCase()
+    .substring(0, 50)
+    .split(' ')
+    .join('.');
+
   // TODO validate
-  const filedir = `${process.cwd()}/files/`;
+  const filedir = `${__dirname()}/files/`;
   fs.readdir(filedir, (readdirerr, files) => {
     if (readdirerr) {
       console.error('failed to read directory', readdirerr);
