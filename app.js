@@ -10,6 +10,8 @@ const PORT = process.env.PORT || 8080;
 const MAX_FILE_AGE_MS = process.env.MAX_FILE_AGE_MS || 30 * 1000;
 const DELETE_JOB_INTERVAL_MS = process.env.DELETE_JOB_INTERVAL_MS || 5 * 1000;
 
+console.log('dirname', __dirname);
+
 const app = express();
 
 // middleware
@@ -29,7 +31,7 @@ app.get('/download/:keywords', (request, response) => {
     .join('.');
 
   // TODO validate
-  const filedir = `${__dirname()}/files/`;
+  const filedir = path.join(__dirname, 'files');
   fs.readdir(filedir, (readdirerr, files) => {
     if (readdirerr) {
       console.error('failed to read directory', readdirerr);
@@ -44,7 +46,8 @@ app.get('/download/:keywords', (request, response) => {
       return;
     }
     const originalName = filename.split('.').slice(3).join('.'); // remove keywords prefix to get original filename
-    response.download(`${__dirname}/files/${filename}`, originalName, (downloaderr) => {
+    const filepath = path.join(__dirname, 'files', filename);
+    response.download(filepath, originalName, (downloaderr) => {
       response.status(500, downloaderr);
       response.end();
     });
@@ -58,7 +61,8 @@ app.post('/upload', (request, response) => {
     const { file } = request.files;
     const rwords = randomWords(3).join('.');
     const filename = `${rwords}.${file.name}`;
-    file.mv(`./files/${filename}`)
+    const targetpath = path.join(__dirname, 'files', filename);
+    file.mv(targetpath)
       .then(() => response.json(rwords));
   }
 });
@@ -67,14 +71,14 @@ app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
 // delete old files
 function deleteOldFiles() {
-  const filedir = `${process.cwd()}/files/`;
+  const filedir = path.join(__dirname, 'files');
   fs.readdir(filedir, (readdirerr, files) => {
     if (readdirerr) {
       console.error('failed to read directory', readdirerr);
       return;
     }
     for (let i = 0; i < files.length; i += 1) {
-      const file = `${process.cwd()}/files/${files[i]}`;
+      const file = path.join(__dirname, 'files', files[i]);
       fs.stat(file, (staterr, stats) => {
         const { birthtime } = stats;
         const age = Date.now() - birthtime;
