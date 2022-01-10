@@ -26,6 +26,7 @@ app.get('/download/:keywords', (request, response) => {
   const filedir = `${process.cwd()}/files/`;
   fs.readdir(filedir, (readdirerr, files) => {
     if (readdirerr) {
+      console.error('failed to read directory', readdirerr);
       response.status(500, readdirerr);
       response.end();
       return;
@@ -63,7 +64,7 @@ function deleteOldFiles() {
   const filedir = `${process.cwd()}/files/`;
   fs.readdir(filedir, (readdirerr, files) => {
     if (readdirerr) {
-      console.error('failed to read directory');
+      console.error('failed to read directory', readdirerr);
       return;
     }
     for (let i = 0; i < files.length; i += 1) {
@@ -74,7 +75,7 @@ function deleteOldFiles() {
         if (age > MAX_FILE_AGE_MS) {
           fs.unlink(file, (unlinkerr) => {
             if (unlinkerr) {
-              console.error('failed to delete file', file);
+              console.error('failed to delete file', file, unlinkerr);
               return;
             }
             console.log('Deleted', file);
