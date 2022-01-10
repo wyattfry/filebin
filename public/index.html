@@ -19,17 +19,51 @@
       ev.preventDefault();
     }
 
-    function upload(data) {
-      let formData = new FormData();
-      formData.append("file", data);
-      fetch('/upload', { method: "POST", body: formData })
-        .then(response => response.json())
-        .then(keywords => {
-          var div = document.createElement('div')
-          div.innerText = keywords;
-          document.body.appendChild(div);
-        });
+    // function upload(data) {
+    //   let formData = new FormData();
+    //   formData.append("file", data);
+    //   fetch('/upload', { method: "POST", body: formData, })
+    //     .then(response => response.json())
+    //     .then(keywords => {
+    //       var div = document.createElement('div')
+    //       div.innerText = keywords;
+    //       document.body.appendChild(div);
+    //     });
+    // }
+
+    function upload(file) {
+      const formdata = new FormData();
+
+      formdata.append('file', file);
+
+      const request = new XMLHttpRequest();
+      request.responseType = 'json';
+      const div = document.createElement('div')
+      div.innerHTML = '0%';
+      document.body.appendChild(div);
+
+      request.upload.addEventListener('progress', function (event) {
+        const file1Size = file.size;
+
+        if (event.loaded <= file1Size) {
+          const percent = Math.round(event.loaded / file1Size * 100);
+          div.innerHTML = percent + '%';
+        }
+
+        if (event.loaded == event.total) {
+          div.innerHTML = '100%';
+        }
+      });
+
+      request.onload = function (event) {
+        div.innerHTML = request.response;
+      };
+
+      request.open('POST', '/upload');
+      request.timeout = 45000;
+      request.send(formdata)
     }
+
 
 
     function dropHandler(ev) {

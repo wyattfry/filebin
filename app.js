@@ -10,8 +10,6 @@ const PORT = process.env.PORT || 8080;
 const MAX_FILE_AGE_MS = process.env.MAX_FILE_AGE_MS || 30 * 1000;
 const DELETE_JOB_INTERVAL_MS = process.env.DELETE_JOB_INTERVAL_MS || 5 * 1000;
 
-console.log('dirname', __dirname);
-
 const app = express();
 
 // middleware
@@ -80,6 +78,10 @@ function deleteOldFiles() {
     for (let i = 0; i < files.length; i += 1) {
       const file = path.join(__dirname, 'files', files[i]);
       fs.stat(file, (staterr, stats) => {
+        if (staterr) {
+          console.error('failed to get status of file', file, staterr);
+          return;
+        }
         const { birthtime } = stats;
         const age = Date.now() - birthtime;
         if (age > MAX_FILE_AGE_MS) {
