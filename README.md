@@ -1,42 +1,43 @@
-INTERFACE
+# filebin
 
-Download:
-see a text input box, type in n keywords
+A easy drag-and-drop file server, intended to make transferring files between computers easier.
 
-Upload:
-or drag and drop a file
-then you see the n keywords for that file
+## Install
 
+Use npm to install
 
+```
+$ git clone https://github.com/wyattfry/filebin
+$ cd ./filebin
+$ npm install
+```
 
-IMPLEMENTATION
+## Run
 
+Use npm to run
 
-## Receive from client:
-save file with its given name in a directory
+```
+$ npm start
 
-project.zip
+> filebin@1.0.0 start
+> nodemon app.js
 
-Server prepend
-            keywords
+[nodemon] 2.0.15
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node app.js`
+listening on port 8080
+```
 
-system.minute.portion.project.zip
-interference.sodium.jurisdiction.project.zip
+Then open http://localhost:8080/ in a browser, drag a file to the page and drop anywhere. Once it's uploaded, three keywords will appear. Type the three keywords in the textbox and press `Enter` and it the file will be downloaded. The server will automatically delete files after a while.
 
-## Send to client:
+## Configure
 
-receive keywords from client
-e.g. "system minute portion"
-scan files for keywords
-send to client
+The following values can be set via environment variables:
 
-
-## Clean up:
-worker that deletes files older than X every T
-
-
-Questions:
-- how does server track n keyword <--> file associations?
-  - 
-- how to prevent files w same name to overwrite?
-- how does server delete expired files?
+|Variable|Default|Purpose|
+|--|--|--|
+|PORT|8080|The port on which the server runs|
+|MAX_FILE_AGE_MS|30000 (30s)|Uploaded files older than this will be deleted|
+|DELETE_JOB_INTERVAL_MS|5000 (5s)|How often to scan for files to delete|
