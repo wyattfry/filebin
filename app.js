@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const upload = require('express-fileupload');
 const randomWords = require('random-words');
+const humanReadable = require('@tsmx/human-readable');
 const path = require('path');
 const fs = require('fs');
 
@@ -9,11 +10,19 @@ const fs = require('fs');
 const PORT = process.env.PORT || 8080;
 const MAX_FILE_AGE_MS = process.env.MAX_FILE_AGE_MS || 30 * 1000;
 const DELETE_JOB_INTERVAL_MS = process.env.DELETE_JOB_INTERVAL_MS || 5 * 1000;
-
+const MAX_FILE_SIZE = 500000000;
 const app = express();
 
 // middleware
 app.use(morgan('dev'));
+app.use((req, res, next) => {
+  const length = parseInt(req.header('content-length'), 10);
+  if (length > MAX_FILE_SIZE) {
+    res.status(400).json({ errors: [`File size ${humanReadable.fromBytes(length)} exceeds max allowed ${humanReadable.fromBytes(MAX_FILE_SIZE)}`] });
+  } else {
+    next();
+  }
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); // this is to handle URL encoded data
 app.use(upload());

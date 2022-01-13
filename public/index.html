@@ -16,6 +16,7 @@
 
     div.row {
       padding-left: 30px;
+      padding-right: 30px;
     }
   </style>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -34,9 +35,8 @@
 
       const request = new XMLHttpRequest();
       request.responseType = 'json';
-      const div = document.createElement('div')
-      div.classList.add('text-light');
-      div.classList.add('row');
+      const div = document.querySelector('div#link-info')
+      div.classList.add('text-light', 'h2', 'mt-3', 'text-center');
       div.innerHTML = '0%';
       document.querySelector('div.container').appendChild(div);
 
@@ -48,14 +48,15 @@
           const percent = Math.round(event.loaded / file1Size * 100);
           div.innerHTML = percent + '%';
         }
-
-        if (event.loaded == event.total) {
-          div.innerHTML = '100%';
-        }
       });
 
       request.onload = function (event) {
-        div.innerHTML = `<a href="/download/${request.response}">${request.response}</a>`;
+        if (request.status == 200) {
+          div.innerHTML = `<a href="/download/${request.response}">${request.response.split(".").join(" ")}</a>`;
+        } else {
+          div.remove();
+          alert(request.response.errors.join('\n'));
+        }
       };
 
       request.open('POST', '/upload');
@@ -63,6 +64,11 @@
       request.send(formdata)
     }
 
+    window.onload = () => {
+		      document.getElementById('upload-button').addEventListener('change', event => {
+					upload(event.target.files[0]);
+				});
+    }
 
 
     function dropHandler(ev) {
@@ -77,6 +83,8 @@
           if (ev.dataTransfer.items[i].kind === 'file') {
             var file = ev.dataTransfer.items[i].getAsFile();
             upload(file)
+          } else {
+            alert('Only files can be uploaded.')
           }
         }
       } else {
@@ -114,9 +122,19 @@
       <img src="/filebinlogo.png" class="img-fluid" alt="filebin">
     </div>
     <div class="row">
+      <p class="text-light">To download a file, enter its three word phrase below (case insensitive), then hit enter</p>
+    </div>
+    <div class="row">
       <input class="mb-3" type="text" name="keywordInput" id="keywordInput" onkeypress="download(this)">
     </div>
-
+    <div class="row">
+      <p class="text-light">To upload a file, drag and drop it anywhere on this page, or click the button to pick a file</p>
+    </div>
+    <div class="row">
+      <input id="upload-button" type="file" class="text-light"></input>
+    </div>
+  <div id="link-info">
+  </div>
   </div>
 </body>
 

@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@tsmx/human-readable": "^1.0.7",
     "express": "latest",
     "express-fileupload": "latest",
     "morgan": "latest",
