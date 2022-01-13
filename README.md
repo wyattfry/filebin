@@ -1,4 +1,4 @@
-# filebin
+![filebin](./public/filebinlogo.png)
 
 A easy drag-and-drop file server, intended to make transferring files between computers easier.
 
