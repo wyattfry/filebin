@@ -11,6 +11,7 @@
     "@tsmx/human-readable": "^1.0.7",
     "express": "latest",
     "express-fileupload": "latest",
+    "express-rate-limit": "^6.1.0",
     "morgan": "latest",
     "nodemon": "latest",
     "random-words": "^1.1.0"

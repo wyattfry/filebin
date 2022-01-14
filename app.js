@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit')
 const morgan = require('morgan');
 const upload = require('express-fileupload');
 const randomWords = require('random-words');
@@ -8,17 +9,31 @@ const fs = require('fs');
 
 // set port from environment variable, or 8080
 const PORT = process.env.PORT || 8080;
-const MAX_FILE_AGE_MS = process.env.MAX_FILE_AGE_MS || 30 * 1000;
+const MAX_FILE_AGE_MS = process.env.MAX_FILE_AGE_MS || 10 * 60 * 1000;
 const DELETE_JOB_INTERVAL_MS = process.env.DELETE_JOB_INTERVAL_MS || 5 * 1000;
-const MAX_FILE_SIZE = 500000000;
+const MAX_FILE_SIZE = 500 * 10000;
 const app = express();
+
+
+
+const apiLimiter = rateLimit({
+	windowMs: 1 * 60 * 1000, // 1 minutes
+	max: 1, // Limit each IP to 100 requests per `window` (here, per 1 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+app.use('/upload', apiLimiter)
+
+
 
 // middleware
 app.use(morgan('dev'));
 app.use((req, res, next) => {
   const length = parseInt(req.header('content-length'), 10);
   if (length > MAX_FILE_SIZE) {
-    res.status(400).json({ errors: [`File size ${humanReadable.fromBytes(length)} exceeds max allowed ${humanReadable.fromBytes(MAX_FILE_SIZE)}`] });
+    res.status(400);
+    res.statusText = `File size ${humanReadable.fromBytes(length)} exceeds max allowed ${humanReadable.fromBytes(MAX_FILE_SIZE)}`;
   } else {
     next();
   }
@@ -27,6 +42,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false })); // this is to handle URL encoded data
 app.use(upload());
 app.use(express.static(path.join(__dirname, 'public'))); // enable static files pointing to the folder "public"
+
 
 // routes
 app.get('/download/:keywords', (request, response) => {
@@ -42,7 +58,8 @@ app.get('/download/:keywords', (request, response) => {
   fs.readdir(filedir, (readdirerr, files) => {
     if (readdirerr) {
       console.error('failed to read directory', readdirerr);
-      response.status(500, readdirerr);
+      response.statusText(JSON.stringify(readdirerr));
+      response.status(500);
       response.end();
       return;
     }
@@ -73,6 +90,8 @@ app.post('/upload', (request, response) => {
       .then(() => response.json(rwords));
   }
 });
+
+
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
