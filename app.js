@@ -14,8 +14,6 @@ const DELETE_JOB_INTERVAL_MS = process.env.DELETE_JOB_INTERVAL_MS || 5 * 1000;
 const MAX_FILE_SIZE = 500 * 10000;
 const app = express();
 
-
-
 const apiLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minutes
     max: 1, // Limit each IP to 100 requests per `window` (here, per 1 minutes)
@@ -56,7 +54,7 @@ app.get('/download/:keywords', (request, response) => {
     fs.readdir(filedir, (readdirerr, files) => {
         if (readdirerr) {
             console.error('failed to read directory', readdirerr);
-            response.statusText(JSON.stringify(readdirerr));
+            response.statusText = JSON.stringify(readdirerr);
             response.status(500);
             response.end();
             return;
@@ -70,7 +68,8 @@ app.get('/download/:keywords', (request, response) => {
         const originalName = filename.split('.').slice(3).join('.'); // remove keywords prefix to get original filename
         const filepath = path.join(__dirname, 'files', filename);
         response.download(filepath, originalName, (downloaderr) => {
-            response.status(500, downloaderr);
+            response.statusText = downloaderr
+            response.status(500);
             response.end();
         });
     });

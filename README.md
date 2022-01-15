@@ -1,4 +1,4 @@
-![filebin](./public/filebinlogo.png)
+![ferryhandy](./public/ferryhandylogo.png)
 
 A easy drag-and-drop file server, intended to make transferring files between computers easier.
 
@@ -7,8 +7,8 @@ A easy drag-and-drop file server, intended to make transferring files between co
 Use npm to install
 
 ```
-$ git clone https://github.com/wyattfry/filebin
-$ cd ./filebin
+$ git clone https://github.com/wyattfry/ferryhandy
+$ cd ./ferryhandy
 $ npm install
 ```
 
@@ -19,7 +19,7 @@ Use npm to run
 ```
 $ npm start
 
-> filebin@1.0.0 start
+> ferryhandy@1.0.0 start
 > nodemon app.js
 
 [nodemon] 2.0.15

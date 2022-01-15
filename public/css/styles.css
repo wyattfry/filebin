@@ -21,8 +21,8 @@ div.container {
 
 div.row {
     padding: 20px;
+    background-color: #184b7a;
     margin-top: 15px;
     margin-bottom: 15px;
-    background: #202020;
     border-radius: 10px;
 }

@@ -1,24 +1,24 @@
 {
-  "name": "filebin",
-  "version": "1.0.0",
-  "description": "Dead simple web server using node.js+Express.js+forever",
-  "main": "app.js",
-  "scripts": {
-    "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "@tsmx/human-readable": "^1.0.7",
-    "express": "latest",
-    "express-fileupload": "latest",
-    "express-rate-limit": "^6.1.0",
-    "morgan": "latest",
-    "nodemon": "latest",
-    "random-words": "^1.1.0"
-  },
-  "devDependencies": {
-    "eslint": "^8.6.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.4"
-  }
+    "name": "ferryhandy",
+    "version": "1.0.0",
+    "description": "Dead simple web server using node.js+Express.js+forever",
+    "main": "app.js",
+    "scripts": {
+        "start": "nodemon app.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "@tsmx/human-readable": "^1.0.7",
+        "express": "latest",
+        "express-fileupload": "latest",
+        "express-rate-limit": "^6.1.0",
+        "morgan": "latest",
+        "nodemon": "latest",
+        "random-words": "^1.1.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.6.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.25.4"
+    }
 }
