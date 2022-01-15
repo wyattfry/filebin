@@ -1,0 +1,28 @@
+body {
+    height: 100%;
+    color: white;
+}
+
+h3 {
+    color: white;
+}
+
+p {
+    color: white;
+}
+
+ul {
+    color: white;
+}
+
+div.container {
+    max-width: 600px;
+}
+
+div.row {
+    padding: 20px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background: #202020;
+    border-radius: 10px;
+}

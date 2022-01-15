@@ -5,121 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>filebin</title>
-    <style>
-        body {
-            height: 100%;
-            color: white;
-        }
-
-	h3 {
-		color: white;
-	}
-
-	p {
-		color: white;
-	}
-
-	ul {
-		color: white;
-	}
-
-	input {
-		color: white;
-	}
-
-        div.container {
-            max-width: 600px;
-        }
-
-        div.row {
-            padding: 20px;
-	    margin-top: 15px;
-	    margin-bottom: 15px;
-	    background: #202020;
-	    border-radius: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script>
-        function dragOverHandler(ev) {
-            // Prevent default behavior (Prevent file from being opened)
-            ev.preventDefault();
-        }
-
-        function upload(file) {
-            const formdata = new FormData();
-
-            formdata.append('file', file);
-
-            const request = new XMLHttpRequest();
-            request.responseType = 'json';
-            const div = document.querySelector('div#link-info')
-            div.classList.add('text-light', 'mt-3', 'text-center');
-            div.innerHTML = '0%';
-
-            // Progess indicator
-            request.upload.addEventListener('progress', function(event) {
-                const file1Size = file.size;
-
-                if (event.loaded <= file1Size) {
-                    const percent = Math.round(event.loaded / file1Size * 100);
-                    div.innerHTML = percent + '%';
-                }
-            });
-
-            request.onload = function(event) {
-                if (request.status == 200) {
-                    div.innerHTML = `<p>Download link:</p><a class="h2" href="/download/${request.response}">${request.response.split(".").join(" ")}</a>`;
-                } else {
-                    alert(request.statusText);
-                }
-            };
-
-            request.open('POST', '/upload');
-            request.timeout = 45000;
-            request.send(formdata)
-        }
-
-        window.onload = () => {
-            document.getElementById('upload-button').addEventListener('change', event => {
-                upload(event.target.files[0]);
-            });
-        }
-
-
-        function dropHandler(ev) {
-            // Prevent default behavior (Prevent file from being opened)
-            ev.preventDefault();
-
-            if (ev.dataTransfer.items) {
-                // If the browser supports DataTransferItemList interface,
-                // use getAsFile method to access the file(s)
-                for (var i = 0; i < ev.dataTransfer.items.length; i++) {
-                    // If dropped items aren't files, reject them
-                    if (ev.dataTransfer.items[i].kind === 'file') {
-                        var file = ev.dataTransfer.items[i].getAsFile();
-                        upload(file)
-                    } else {
-                        alert('Only files can be uploaded.')
-                    }
-                }
-            } else {
-                // Use DataTransfer interface to access the file(s)
-                for (var i = 0; i < ev.dataTransfer.files.length; i++) {
-                    upload(ev.dataTransfer.files[i].name)
-                }
-            }
-        }
-
-        function download(element) {
-            if (event.keyCode == 13) { // 'enter' pressed
-                var keywords = element.value;
-                fetch('/download/' + keywords)
-                    .then(response => location.href = response.url)
-                    .catch(console.error);
-            }
-        }
-    </script>
+    <script src="js/scripts.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -127,23 +15,23 @@
 
 <body style="background-color: black" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
     <div class="container">
-            <img src="/filebinlogo.png" class="img-fluid" alt="filebin">
+        <img src="/filebinlogo.png" class="img-fluid" alt="filebin">
         <div class="row">
             <h3>Want to transfer a file?</h3>
-	    <ul>
-		    <li>Open this page on two devices, upload a file from one, then download it on the other</li>
-		    <li>The file will be deleted after 10 minutes</li>
-		    <li>Max size allowed is 500MB</li>
-	    </ul>
-	</div>
+            <ul>
+                <li>Open this page on two devices, upload a file from one, then download it on the other</li>
+                <li>The file will be deleted after 10 minutes</li>
+                <li>Max size allowed is 500MB</li>
+            </ul>
+        </div>
         <div class="row">
-		<h3>Upload</h3>
+            <h3>Upload</h3>
             <p>Drag and drop a file anywhere on this page, or click the button to use your file picker</p>
             <input id="upload-button" type="file"></input>
         </div>
-	<div class="row">
-		<h3>Download</h3>
-	    <p>Enter the three word phrase generated when the file was uploaded (case insensitive), then press enter</p>
+        <div class="row">
+            <h3>Download</h3>
+            <p>Enter the three word phrase generated when the file was uploaded (case insensitive), then press enter</p>
             <input type="text" name="keywordInput" id="keywordInput" onkeypress="download(this)">
         </div>
         <div id="link-info">

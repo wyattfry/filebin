@@ -1,133 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drag-n-drop File Uploading</title>
-    <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
+function dragOverHandler(ev) {
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
+}
+
+function upload(file) {
+    const formdata = new FormData();
+
+    formdata.append('file', file);
+
+    const request = new XMLHttpRequest();
+    request.responseType = 'json';
+    const div = document.querySelector('div#link-info')
+    div.classList.add('text-light', 'mt-3', 'text-center');
+    div.innerHTML = '0%';
+
+    // Progess indicator
+    request.upload.addEventListener('progress', function (event) {
+        const file1Size = file.size;
+
+        if (event.loaded <= file1Size) {
+            const percent = Math.round(event.loaded / file1Size * 100);
+            div.innerHTML = percent + '%';
         }
-        body {
-            padding: 0;
-            margin: 0;
+    });
+
+    request.onload = function (event) {
+        if (request.status == 200) {
+            div.innerHTML = `<p>Download link:</p><a class="h2" href="/download/${request.response}">${request.response.split(".").join(" ")}</a>`;
+        } else {
+            alert(request.statusText);
         }
-        img {
-            display: block;
-            margin: 0 auto;
-            width: 100%;
-            height: auto;
-        }
-        #fileslbl {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 25vh;
-            background-color: red;
-            color: white;
-            padding: 16px;
-            text-align: center;
-            transition: .5s;
-			animation-duration: 1s;
-			animation-fill-mode: forwards;
-			animation-iteration-count: infinite;
-        }
-        #filesfld {
-            display: none;
-        }
-        #progress {
-            width: 0;
-            background-color: blue;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-            line-height: 25px;
-            padding: 0 5px;
-        }
-		@keyframes dropbox {
-			0% {
-				background-image: repeating-linear-gradient(30deg, green 1%, green 3%, darkgreen 5%, darkgreen 5%);
-			}
-			50% {
-				background-image: repeating-linear-gradient(30deg, darkgreen 1%, darkgreen 3%, green 5%, green 5%);
-			}
-			100% {
-				background-image: repeating-linear-gradient(30deg, green 1%, green 3%, darkgreen 5%, darkgreen 5%);
-			}
-		}
-    </style>
-    <script type="text/javascript">
-        function stopDefault(event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        function dragOver(label, text) {
-            /* ADD ALMOST ANY STYLING YOU LIKE */
-			label.style.animationName = "dropbox";
-            label.innerText = text;
-        }
-        function dragLeave(label) {
-            /* THIS SHOULD REMOVE ALL STYLING BY dragOver() */
-			var len = label.style.length;
-            for(var i = 0; i < len; i++) {
-				label.style[label.style[i]] = "";
+    };
+
+    request.open('POST', '/upload');
+    request.timeout = 45000;
+    request.send(formdata)
+}
+
+window.onload = () => {
+    document.getElementById('upload-button').addEventListener('change', event => {
+        upload(event.target.files[0]);
+    });
+}
+
+
+function dropHandler(ev) {
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
+
+    if (ev.dataTransfer.items) {
+        // If the browser supports DataTransferItemList interface,
+        // use getAsFile method to access the file(s)
+        for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+            // If dropped items aren't files, reject them
+            if (ev.dataTransfer.items[i].kind === 'file') {
+                var file = ev.dataTransfer.items[i].getAsFile();
+                upload(file)
+            } else {
+                alert('Only files can be uploaded.')
             }
-            label.innerText = "Click to choose images or drag-n-drop them here";
         }
-        function addFilesAndSubmit(event) {
-            var files = event.target.files || event.dataTransfer.files;
-            document.getElementById("filesfld").files = files;
-            submitFilesForm(document.getElementById("filesfrm"));
+    } else {
+        // Use DataTransfer interface to access the file(s)
+        for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+            upload(ev.dataTransfer.files[i].name)
         }
-        function submitFilesForm(form) {
-            var label = document.getElementById("fileslbl");
-            dragOver(label, "Uploading images..."); // set the drop zone text and styling
-            var fd = new FormData();
-            for(var i = 0; i < form.filesfld.files.length; i++) {
-                var field = form.filesfld;
-                fd.append(field.name, field.files[i], field.files[i].name);
-            }
-            var progress = document.getElementById("progress");
-            var x = new XMLHttpRequest();
-            if(x.upload) {
-                x.upload.addEventListener("progress", function(event){
-                    var percentage = parseInt(event.loaded / event.total * 100);
-                    progress.innerText = progress.style.width = percentage + "%";
-                });
-            }
-            x.onreadystatechange = function () {
-                if(x.readyState == 4) {
-                    progress.innerText = progress.style.width = "";
-                    form.filesfld.value = "";
-                    dragLeave(label); // this will reset the text and styling of the drop zone
-                    if(x.status == 200) {
-                        var images = JSON.parse(x.responseText);
-                        for(var i = 0; i < images.length; i++) {
-                            var img = document.createElement("img");
-                            img.src = images[i];
-                            document.body.appendChild(img);
-                        }
-                    }
-                    else {
-                        // failed - TODO: Add code to handle server errors
-                    }
-                }
-            };
-            x.open("post", form.action, true);
-            x.send(fd);
-            return false;
-        }
-    </script>
-</head>
-<body>
-    <form id="filesfrm" action="/upload" method="post" onsubmit="return submitFilesForm(this);">
-        <input type="file" name="filesfld" id="filesfld" accept="image/*" onchange="submitFilesForm(this.form);" multiple />
-        <label for="filesfld" id="fileslbl"
-        ondragover="stopDefault(event);dragOver(this, 'Drop the images to upload them.');"
-        ondragenter="stopDefault(event);dragOver(this, 'Drop the images to upload them.');"
-        ondragleave="stopDefault(event);dragLeave(this);"
-        ondrop="stopDefault(event);dragLeave(this);addFilesAndSubmit(event);">Click to choose images or drag-n-drop them here</label>
-    </form>
-    <div style="text-align: left;"><div id="progress"></div></div>
-</body>
-</html>
+    }
+}
+
+function download(element) {
+    if (keyCode == 13) { // 'enter' pressed
+        var keywords = element.value;
+        fetch('/download/' + keywords)
+            .then(response => location.href = response.url)
+            .catch(console.error);
+    }
+}
