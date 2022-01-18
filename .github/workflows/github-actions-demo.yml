@@ -21,7 +21,8 @@ jobs:
       - name: deploying on digitalocean
         uses: fjogeleit/http-request-action@master
         with:
-          url: 'https://ferryhandy.com/api/server/restart?key=${{ secrets.FERRYHANDY_KEY }}'
+          url: 'https://ferryhandy.com/api/server/restart'
           timeout: 20000
           method: 'GET'
+          customHeaders: '{"authorization": "${{ secrets.FERRYHANDY_KEY }}"}'
 
