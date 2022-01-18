@@ -20,9 +20,9 @@ jobs:
 
       - name: deploying on digitalocean
         uses: fjogeleit/http-request-action@master
-        timeout-minutes: 1
         with:
           url: 'https://ferryhandy.com/api/server/restart'
+	  timeout: 20000
           method: 'GET'
 
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
