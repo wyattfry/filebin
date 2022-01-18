@@ -20,6 +20,7 @@ jobs:
 
       - name: deploying on digitalocean
         uses: fjogeleit/http-request-action@master
+        timeout-minutes: 1
         with:
           url: 'https://ferryhandy.com/api/server/restart'
           method: 'GET'
