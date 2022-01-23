@@ -1,3 +1,13 @@
+
+
+window.onload = () => {
+    document
+        .getElementById('upload-button')
+        .addEventListener('change', event => {
+            upload(event.target.files[0]);
+        });
+}
+
 function dragOverHandler(ev) {
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
@@ -11,11 +21,11 @@ function upload(file) {
     const request = new XMLHttpRequest();
     request.responseType = 'json';
     const div = document.querySelector('div#link-info')
-    div.classList.add('text-light', 'mt-3', 'text-center');
+    div.classList.add('text-light', 'mt-3');
     div.innerHTML = '0%';
 
     // Progess indicator
-    request.upload.addEventListener('progress', function(event) {
+    request.upload.addEventListener('progress', function (event) {
         const file1Size = file.size;
 
         if (event.loaded <= file1Size) {
@@ -24,7 +34,7 @@ function upload(file) {
         }
     });
 
-    request.onload = function(event) {
+    request.onload = function (event) {
         if (request.status == 200) {
             div.innerHTML = `<p>Download link:</p><a class="h2" href="/download/${request.response}">${request.response.split(".").join(" ")}</a>`;
         } else {
@@ -36,13 +46,6 @@ function upload(file) {
     request.timeout = 45000;
     request.send(formdata)
 }
-
-window.onload = () => {
-    document.getElementById('upload-button').addEventListener('change', event => {
-        upload(event.target.files[0]);
-    });
-}
-
 
 function dropHandler(ev) {
     // Prevent default behavior (Prevent file from being opened)
