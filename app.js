@@ -11,8 +11,10 @@ const fs = require('fs');
 const PORT = process.env.PORT || 8080;
 const MAX_FILE_AGE_MS = process.env.MAX_FILE_AGE_MS || 10 * 60 * 1000;
 const DELETE_JOB_INTERVAL_MS = process.env.DELETE_JOB_INTERVAL_MS || 5 * 1000;
-const MAX_FILE_SIZE = 500 * 10000;
+const MAX_FILE_SIZE = 500 * 1000000;
 const app = express();
+
+console.log('Max file size allowed:', humanReadable.fromBytes(MAX_FILE_SIZE));
 
 const apiLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minutes
