@@ -9,6 +9,7 @@
     },
     "dependencies": {
         "@tsmx/human-readable": "^1.0.7",
+        "ejs": "^3.1.6",
         "express": "latest",
         "express-fileupload": "latest",
         "express-rate-limit": "^6.1.0",

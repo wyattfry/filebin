@@ -7,11 +7,11 @@ const humanReadable = require('@tsmx/human-readable');
 const path = require('path');
 const fs = require('fs');
 
-// set port from environment variable, or 8080
 const PORT = process.env.PORT || 8080;
-const MAX_FILE_AGE_MS = process.env.MAX_FILE_AGE_MS || 10 * 60 * 1000;
-const DELETE_JOB_INTERVAL_MS = process.env.DELETE_JOB_INTERVAL_MS || 5 * 1000;
-const MAX_FILE_SIZE = 500 * 1000000;
+const MAX_FILE_AGE_MS = process.env.MAX_FILE_AGE_MS || 60 * 60 * 1000;         // 60 minutes
+const DELETE_JOB_INTERVAL_MS = process.env.DELETE_JOB_INTERVAL_MS || 5 * 1000; // 5 seconds
+const MAX_FILE_SIZE = process.env.MAX_FILE_SIZE || 500 * 1000000;              // 500MB
+
 const app = express();
 
 console.log('Max file size allowed:', humanReadable.fromBytes(MAX_FILE_SIZE));
@@ -23,15 +23,20 @@ const apiLimiter = rateLimit({
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
 
-app.use('/upload', apiLimiter)
+// TODO make another rate limiter for download
+
+app.set('view engine', 'ejs')
 
 // middleware
+app.use('/upload', apiLimiter)
 app.use(morgan('dev'));
 app.use((req, res, next) => {
     const length = parseInt(req.header('content-length'), 10);
+    console.log('received file, size', humanReadable.fromBytes(length));
     if (length > MAX_FILE_SIZE) {
         res.status(400);
         res.statusText = `File size ${humanReadable.fromBytes(length)} exceeds max allowed ${humanReadable.fromBytes(MAX_FILE_SIZE)}`;
+	res.end();
     } else {
         next();
     }
@@ -43,7 +48,13 @@ app.use(express.static(path.join(__dirname, 'public'))); // enable static files 
 
 
 // routes
+app.get('/', (req, res) => {
+    res.render('home');
+});
+
+
 app.get('/download/:keywords', (request, response) => {
+    // TODO strip out anything not a-zA-Z
     const keywords = `${request.params.keywords}.`
         .trim()
         .toLocaleLowerCase()
@@ -63,8 +74,7 @@ app.get('/download/:keywords', (request, response) => {
         }
         const filename = files.filter((x) => x.startsWith(keywords))[0];
         if (!filename) {
-            response.statusCode = 404;
-            response.end();
+	    response.render('not-found');
             return;
         }
         const originalName = filename.split('.').slice(3).join('.'); // remove keywords prefix to get original filename
@@ -117,6 +127,7 @@ function deleteOldFiles() {
                 }
                 const { birthtime } = stats;
                 const age = Date.now() - birthtime;
+		// TODO if file is currently being accessed, DO NOT DELETE
                 if (age > MAX_FILE_AGE_MS) {
                     fs.unlink(file, (unlinkerr) => {
                         if (unlinkerr) {
