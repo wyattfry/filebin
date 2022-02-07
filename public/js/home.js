@@ -1,4 +1,5 @@
-
+document.body.setAttribute('ondrop', 'dropHandler(event);');
+document.body.setAttribute('ondragover', 'dragOverHandler(event);')
 
 window.onload = () => {
     document
@@ -9,7 +10,7 @@ window.onload = () => {
 }
 
 function dragOverHandler(ev) {
-    // Prevent default behavior (Prevent file from being opened)
+    // Prevent browser from opening file
     ev.preventDefault();
 }
 
@@ -25,7 +26,7 @@ function upload(file) {
     div.innerHTML = '0%';
 
     // Progess indicator
-    request.upload.addEventListener('progress', function (event) {
+    request.upload.addEventListener('progress', function(event) {
         const file1Size = file.size;
 
         if (event.loaded <= file1Size) {
@@ -34,7 +35,7 @@ function upload(file) {
         }
     });
 
-    request.onload = function (event) {
+    request.onload = function(event) {
         if (request.status == 200) {
             div.innerHTML = `<p>Download link:</p><a class="h2" href="/download/${request.response}">${request.response.split(".").join(" ")}</a>`;
         } else {

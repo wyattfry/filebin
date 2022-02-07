@@ -1,4 +1,4 @@
-![ferryhandy](./public/ferryhandylogo.png)
+![ferryhandy](./public/logo.png)
 
 A easy drag-and-drop file server, intended to make transferring files between computers easier.
 

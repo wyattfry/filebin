@@ -1,91 +1,39 @@
-<!DOCTYPE html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferry Handy</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<%- include('header'); -%>
     <script src="/js/home.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
-</head>
 
-<body ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
-    <div class="container">
 
-        <!-- Instructions -->
-        <div class="logo">
-            <img src="/logo.png" class="img-fluid" alt="ferryhandy">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Want to transfer a file?</h5>
+            <p class="card-text">Open this page on two devices, upload a file from one, then download it on the other
+            </p>
+            <p>This is NOT secure storage. <strong>DO NOT upload any sensitive information.</strong></p>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Want to transfer a file?</h5>
-                <p class="card-text">Open this page on two devices, upload a file from one, then download it on the
-                    other</p>
-                <p>This is NOT secure storage. <strong>DO NOT upload any sensitive information.</strong></p>
-            </div>
-        </div>
-
-        <!-- Upload -->
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Upload</h5>
-                <div class="input-group mb-3">
-                    <input type="file" class="form-control" id="upload-button">
-                </div>
-                <div id="link-info"></div>
-            </div>
-        </div>
-
-        <!-- Download -->
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Download</h5>
-                <p>Enter the three word phrase generated when the file was uploaded (case insensitive), then press
-                    enter</p>
-		<!-- TODO only accept a-zA-Z -->
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Code:</span>
-                    <input type="text" class="form-control" placeholder="three word phrase" aria-label="download code"
-                        aria-describedby="basic-addon1" onkeypress="download(this)">
-                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" onkeypress="download(this)">Download</button>
-                </div>
-            </div>
-        </div>
-
-
-
-
-        <!-- <div class="card">
-            <div class="row">
-                <h3>Upload a file</h3>
-            </div>
-            <div class="row">
-                <input id="upload-button" type="file">
-            </div>
-        </div>
-        <div class="card">
-            <div class="row">
-                <h3>Download</h3>
-
-                <input type="text" name="keywordInput" id="keywordInput" onkeypress="download(this)">
-            </div>
-        </div>
-        <div id="link-info"></div> -->
-
-        
-
     </div>
-</body>
 
-</html>
+    <!-- Upload -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Upload</h5>
+            <div class="input-group mb-3">
+                <input type="file" class="form-control" id="upload-button">
+            </div>
+            <div id="link-info"></div>
+        </div>
+    </div>
+
+    <!-- Download -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Download</h5>
+            <p>Enter the three word phrase generated when the file was uploaded (case insensitive), then press enter
+            </p>
+            <!-- TODO only accept a-zA-Z -->
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Code:</span>
+                <input type="text" class="form-control" placeholder="three word phrase" aria-label="download code" aria-describedby="basic-addon1" onkeypress="download(this)">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2" onkeypress="download(this)">Download</button>
+            </div>
+        </div>
+    </div>
+    <%- include('footer'); -%>
