@@ -28,7 +28,6 @@ function dragOverHandler(ev) {
 
 function updateProgress(percent) {
     const progressBar = document.querySelector('div.progress-bar');
-    console.log('firstElement', progressBar.firstElementChild)
     progressBar.style.width = `${percent}%`;
     progressBar.setAttribute('aria-valuenow', percent)
     document.querySelector('div.progress-number').innerText = `${percent}%`
@@ -47,12 +46,9 @@ function upload(file) {
     request.responseType = 'json';
     const div = document.querySelector('div#link-info')
     div.classList.add('text-light', 'mt-3');
-    div.innerHTML = '0%';
     // Progess indicator
     request.upload.addEventListener('progress', function(event) {
         const file1Size = file.size;
-        console.log(event.loaded / file1Size)
-
         if (event.loaded <= file1Size) {
             const percent = Math.round(event.loaded / file1Size * 100);
             updateProgress(percent);
