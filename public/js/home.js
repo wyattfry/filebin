@@ -6,12 +6,36 @@ window.onload = () => {
         .getElementById('upload-button')
         .addEventListener('change', event => {
             upload(event.target.files[0]);
+            document
+                .querySelector('label.custom-file-label')
+                .innerText = event.target.files[0].name
         });
+
+    document
+        .querySelector('.download-input')
+        .addEventListener('keypress', download)
+
+    document
+        .querySelector('.download-button')
+        .addEventListener('click', download)
+
 }
 
 function dragOverHandler(ev) {
     // Prevent browser from opening file
     ev.preventDefault();
+}
+
+function updateProgress(percent) {
+    const progressBar = document.querySelector('div.progress-bar');
+    console.log('firstElement', progressBar.firstElementChild)
+    progressBar.style.width = `${percent}%`;
+    progressBar.setAttribute('aria-valuenow', percent)
+    document.querySelector('div.progress-number').innerText = `${percent}%`
+    if (percent >= 100) {
+        document.querySelector('div.progress-number').innerText = '100%'
+        document.querySelector('div.checkmark').classList.remove('display-none')
+    }
 }
 
 function upload(file) {
@@ -24,14 +48,16 @@ function upload(file) {
     const div = document.querySelector('div#link-info')
     div.classList.add('text-light', 'mt-3');
     div.innerHTML = '0%';
-
     // Progess indicator
     request.upload.addEventListener('progress', function(event) {
         const file1Size = file.size;
+        console.log(event.loaded / file1Size)
 
         if (event.loaded <= file1Size) {
             const percent = Math.round(event.loaded / file1Size * 100);
-            div.innerHTML = percent + '%';
+            updateProgress(percent);
+        } else {
+            updateProgress(100)
         }
     });
 
@@ -72,9 +98,9 @@ function dropHandler(ev) {
     }
 }
 
-function download(element) {
-    if (event.keyCode == 13) { // 'enter' pressed
-        var keywords = element.value;
+function download(event) {
+    if (event.keyCode == 13 || event.type === 'click') { // 'enter' pressed
+        var keywords = document.querySelector('.download-input').value;
         fetch('/download/' + keywords)
             .then(response => location.href = response.url)
             .catch(console.error);

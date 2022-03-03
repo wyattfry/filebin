@@ -12,11 +12,31 @@
     </div>
 
     <!-- Upload -->
+
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Upload</h5>
+
             <div class="input-group mb-3">
-                <input type="file" class="form-control" id="upload-button">
+                <input type="file" class="form-control custom-file-input" id="upload-button">
+                <label class="custom-file-label" id="upload" for="customFile">Choose file</label>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
+                    aria-valuemax="100">
+                    <div class="progress-number">
+                        0%
+                    </div>
+                    <div class="checkmark display-none">
+                        <svg width="20px" height="20px" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                            <g>
+                                <circle r="200" cx="255" cy="255" fill="white" />
+                            </g>
+                            <path fill="limegreen"
+                                d="M256,48C141.31,48,48,141.31,48,256s93.31,208,208,208,208-93.31,208-208S370.69,48,256,48ZM364.25,186.29l-134.4,160a16,16,0,0,1-12,5.71h-.27a16,16,0,0,1-11.89-5.3l-57.6-64a16,16,0,1,1,23.78-21.4l45.29,50.32L339.75,165.71a16,16,0,0,1,24.5,20.58Z" />
+                        </svg>
+                    </div>
+                </div>
             </div>
             <div id="link-info"></div>
         </div>
@@ -28,11 +48,11 @@
             <h5 class="card-title">Download</h5>
             <p>Enter the three word phrase generated when the file was uploaded (case insensitive), then press enter
             </p>
-            <!-- TODO only accept a-zA-Z -->
             <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">Code:</span>
-                <input type="text" class="form-control" placeholder="three word phrase" aria-label="download code" aria-describedby="basic-addon1" onkeypress="download(this)">
-                <button class="btn btn-outline-secondary" type="button" id="button-addon2" onkeypress="download(this)">Download</button>
+                <input type="text" class="form-control download-input" placeholder="three word phrase"
+                    aria-label="download code" aria-describedby="basic-addon1" onkeypress="download(this)">
+                <button class="btn btn-primary download-button" type="button" id="button-addon2"
+                    onclick="download(this)" onkeypress="download(this)">Download</button>
             </div>
         </div>
     </div>

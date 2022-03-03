@@ -17,3 +17,26 @@ div.logo {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
 }
+
+.icon {
+    width: 1em;
+    display: inline;
+    margin-right: 40px;
+    position: relative;
+    top: 0.15em;
+}
+
+div.progress {
+    height: 2rem;
+    align-items: center;
+}
+
+div.progress-bar {
+    flex-direction: row;
+    height: 100%;
+    align-items: center;
+}
+
+.display-none {
+    display: none;
+}
