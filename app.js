@@ -10,7 +10,7 @@ const fs = require('fs');
 const PORT = process.env.PORT || 8080;
 const MAX_FILE_AGE_MS = process.env.MAX_FILE_AGE_MS || 60 * 60 * 1000;         // 60 minutes
 const DELETE_JOB_INTERVAL_MS = process.env.DELETE_JOB_INTERVAL_MS || 5 * 1000; // 5 seconds
-const MAX_FILE_SIZE = process.env.MAX_FILE_SIZE || 500 * 1000000;              // 500MB
+const MAX_FILE_SIZE = process.env.MAX_FILE_SIZE || 4000 * 1000000;              // 500MB
 
 const app = express();
 
