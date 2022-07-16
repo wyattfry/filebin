@@ -59,7 +59,7 @@ function upload(file) {
 
     request.onload = function(event) {
         if (request.status == 200) {
-            div.innerHTML = `<p>Download link:</p><a class="h2" href="/download/${request.response}">${request.response.split(".").join(" ")}</a>`;
+            div.innerHTML = `<p>Download link:</p><a class="h2" href="/download/${request.response.rwords}">${request.response.rwords.split(".").join(" ")}</a><br>${request.response.qrSvgString}`;
         } else {
             alert(request.statusText);
         }

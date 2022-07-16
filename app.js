@@ -6,6 +6,7 @@ const randomWords = require('random-words');
 const humanReadable = require('@tsmx/human-readable');
 const path = require('path');
 const fs = require('fs');
+var QRCode = require('qrcode')
 
 const PORT = process.env.PORT || 8080;
 const MAX_FILE_AGE_MS = process.env.MAX_FILE_AGE_MS || 60 * 60 * 1000;         // 60 minutes
@@ -18,7 +19,7 @@ console.log('Max file size allowed:', humanReadable.fromBytes(MAX_FILE_SIZE));
 
 const apiLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minutes
-    max: 1, // Limit each IP to 100 requests per `window` (here, per 1 minutes)
+    max: 3, // Limit each IP to 100 requests per `window` (here, per 1 minutes)
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
@@ -36,7 +37,7 @@ app.use((req, res, next) => {
     if (length > MAX_FILE_SIZE) {
         res.status(400);
         res.statusText = `File size ${humanReadable.fromBytes(length)} exceeds max allowed ${humanReadable.fromBytes(MAX_FILE_SIZE)}`;
-	res.end();
+        res.end();
     } else {
         next();
     }
@@ -74,7 +75,7 @@ app.get('/download/:keywords', (request, response) => {
         }
         const filename = files.filter((x) => x.startsWith(keywords))[0];
         if (!filename) {
-	    response.render('not-found');
+            response.render('not-found');
             return;
         }
         const originalName = filename.split('.').slice(3).join('.'); // remove keywords prefix to get original filename
@@ -96,7 +97,24 @@ app.post('/upload', (request, response) => {
         const filename = `${rwords}.${file.name}`;
         const targetpath = path.join(__dirname, 'files', filename);
         file.mv(targetpath)
-            .then(() => response.json(rwords));
+            .then(() => {
+
+                var linkUrl = request.protocol + '://' + request.get('host') + '/download/' + rwords;
+                
+                var opts = {
+                    errorCorrectionLevel: 'H',
+                    type: 'svg',
+                    margin: 1,
+                }
+                
+                QRCode.toString(linkUrl, opts, function (err, qrSvgString) {
+                  if (err) throw err
+                  return response.json({
+                    rwords,
+                    qrSvgString
+                  })
+                })
+            });
     }
 });
 
@@ -127,7 +145,7 @@ function deleteOldFiles() {
                 }
                 const { birthtime } = stats;
                 const age = Date.now() - birthtime;
-		// TODO if file is currently being accessed, DO NOT DELETE
+                // TODO if file is currently being accessed, DO NOT DELETE
                 if (age > MAX_FILE_AGE_MS) {
                     fs.unlink(file, (unlinkerr) => {
                         if (unlinkerr) {
