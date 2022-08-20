@@ -23,7 +23,7 @@ jobs:
       - name: Deploy on Digital Ocean
         uses: fjogeleit/http-request-action@master
         with:
-          url: 'https://ferryhandy.com/api/server/restart'
+          url: 'https://ferryhandy.com/api/server/restart?image=filebin&port=8080'
           timeout: 60000
           method: 'GET'
           customHeaders: '{"key": "${{ secrets.FERRYHANDY_KEY }}"}'
